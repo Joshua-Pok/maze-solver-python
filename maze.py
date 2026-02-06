@@ -25,8 +25,8 @@ class Maze():
         self.seed = seed
 
 
-        if self.seed != None:
-            self.seed = random.seed(seed)
+        if self.seed is not None:
+            random.seed(self.seed)
 
 
         self.__create_cells()
@@ -68,16 +68,22 @@ class Maze():
             return
 
         self.__win.redraw()
-        time.sleep(0.5)
+        time.sleep(0.1)
 
 
     def draw(self):
         self.__create_cells()
 
-        self._draw_cell(0,0)
-        self._draw_cell(0,1)
-        self._draw_cell(1,0)
-        self._draw_cell(1,1)
+
+        for r in range(self.num_rows):
+            for c in range(self.num_cols):
+                self._draw_cell(r, c)
+
+
+        self._break_walls(0,0)
+
+        self._break_entrance_and_exit()
+
 
 
     def _break_entrance_and_exit(self):
@@ -95,7 +101,7 @@ class Maze():
         # call self._draw_cell() after each removal to update the display
 
 
-    def _break_walls_r(self, i, j):
+    def _break_walls(self, i, j):
         # depth first traversal breaking walls as we go
         # we need to keep breaking until we find the exit
         # maze carving steps"
@@ -112,9 +118,6 @@ class Maze():
             r, c = stack.pop()
             self._cells[r][c].visited = True
 
-            if r == self.num_rows - 1 and c == self.num_cols - 1:
-                return # we found the exit
-
             neighbours = []
 
             for dr, dc in [(1,0), (-1,0), (0, 1), (0, -1)]:
@@ -130,22 +133,31 @@ class Maze():
 
             stack.append((r,c))
             nr, nc, dr, dc = random.choice(neighbours) # randomly choose a neighbour
+            self._cells[nr][nc].visited = True
 
 
             if dr == 1:
                 self._cells[r][c].has_bottom_wall = False
                 self._cells[nr][nc].has_top_wall = False
+                self._draw_cell(r, c)
+                self._draw_cell(nr, nc)
 
             elif dr == -1:
                 self._cells[r][c].has_top_wall = False
                 self._cells[nr][nc].has_bottom_wall = False
+                self._draw_cell(r, c)
+                self._draw_cell(nr, nc)
             elif dc == 1:
                 self._cells[r][c].has_right_wall = False
                 self._cells[nr][nc].has_left_wall = False
+                self._draw_cell(r, c)
+                self._draw_cell(nr, nc)
 
-            if dc == -1:
+            elif dc == -1:
                 self._cells[r][c].has_left_wall = False
                 self._cells[nr][nc].has_right_wall = False
+                self._draw_cell(r, c)
+                self._draw_cell(nr, nc)
 
 
             stack.append((nr, nc))

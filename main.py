@@ -11,7 +11,8 @@ def main():
         10,
         40,
         40,
-        win=win
+        win=win,
+        seed=42
     )
     m.draw()
     win.wait_for_close()

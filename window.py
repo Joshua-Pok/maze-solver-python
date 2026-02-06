@@ -15,30 +15,8 @@ class Window():
         
 
     def redraw(self): # clear the canvas and draw everything again
-        self.canvas.delete("all")
-        padding = 50
-
-        x1 = padding
-        y1 = padding
-
-        x2 = self.width - padding
-        y2 = self.height - padding
-        # --- test cells ---
-        rows = 2
-        cols = 2
-
-        cell_width = (x2 - x1) // cols
-        cell_height = (y2 - y1) // rows
-
-        for r in range(rows):
-            for c in range(cols):
-                cx1 = x1 + c * cell_width
-                cy1 = y1 + r * cell_height
-                cx2 = cx1 + cell_width
-                cy2 = cy1 + cell_height
-
-                cell = Cell()
-                cell.draw(cx1, cy1, cx2, cy2, self.canvas)
+        self.root.update_idletasks()
+        self.root.update()
 
     def wait_for_close(self):
         self.is_running = True
